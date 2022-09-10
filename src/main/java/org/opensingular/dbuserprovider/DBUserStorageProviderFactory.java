@@ -23,11 +23,11 @@ import java.util.Map;
 public class DBUserStorageProviderFactory implements UserStorageProviderFactory<DBUserStorageProvider> {
     
     private static final String PARAMETER_PLACEHOLDER_HELP = "Use '?' as parameter placeholder character (replaced only once). ";
-    private static final String DEFAULT_HELP_TEXT          = "Select to query all users you must return at least: \"id\". " +
+    private static final String DEFAULT_HELP_TEXT          = "Select to query all users you must return at least: \"ID\". " +
                                                              "            \"username\"," +
-                                                             "            \"email\" (optional)," +
-                                                             "            \"firstName\" (optional)," +
-                                                             "            \"lastName\" (optional). Any other parameter can be mapped by aliases to a realm scope";
+                                                             "            \"EMAIL\" (optional)," +
+                                                             "            \"FIRST_NAME\" (optional)," +
+                                                             "            \"LAST_NAME\" (optional). Any other parameter can be mapped by aliases to a realm scope";
     private static final String PARAMETER_HELP             = " The %s is passed as query parameter.";
     
     
@@ -99,7 +99,7 @@ public class DBUserStorageProviderFactory implements UserStorageProviderFactory<
                                            .label("JDBC URL")
                                            .helpText("JDBC Connection String")
                                            .type(ProviderConfigProperty.STRING_TYPE)
-                                           .defaultValue("jdbc:jtds:sqlserver://server-name/database_name;instance=instance_name")
+                                           .defaultValue("jdbc:oracle:thin:@//localhost:1521/xe")
                                            .add()
                                            .property()
                                            .name("user")
@@ -121,7 +121,7 @@ public class DBUserStorageProviderFactory implements UserStorageProviderFactory<
                                            .helpText("Relational Database Management System")
                                            .type(ProviderConfigProperty.LIST_TYPE)
                                            .options(RDBMS.getAllDescriptions())
-                                           .defaultValue(RDBMS.SQL_SERVER.getDesc())
+                                           .defaultValue(RDBMS.ORACLE.getDesc())
                                            .add()
                                            .property()
                                            .name("allowKeycloakDelete")
@@ -154,13 +154,14 @@ public class DBUserStorageProviderFactory implements UserStorageProviderFactory<
                                            .label("List All Users SQL query")
                                            .helpText(DEFAULT_HELP_TEXT)
                                            .type(ProviderConfigProperty.STRING_TYPE)
-                                           .defaultValue("select \"id\"," +
-                                                         "            \"username\"," +
-                                                         "            \"email\"," +
-                                                         "            \"firstName\"," +
-                                                         "            \"lastName\"," +
-                                                         "            \"cpf\"," +
-                                                         "            \"fullName\" from users ")
+                                           .defaultValue("select \"ID\"," +
+                                                         "            \"USER_NAME\"," +
+                                                         "            \"EMAIL\"," +
+                                                         "            \"FIRST_NAME\"," +
+                                                         "            \"LAST_NAME\"" +
+//                                                         "            \"cpf\"," +
+//                                                         "            \"fullName\"" +
+                                                         " from users ")
                                            .add()
         
                                            .property()
@@ -168,13 +169,14 @@ public class DBUserStorageProviderFactory implements UserStorageProviderFactory<
                                            .label("Find user by id SQL query")
                                            .helpText(DEFAULT_HELP_TEXT + String.format(PARAMETER_HELP, "user id") + PARAMETER_PLACEHOLDER_HELP)
                                            .type(ProviderConfigProperty.STRING_TYPE)
-                                           .defaultValue("select \"id\"," +
-                                                         "            \"username\"," +
-                                                         "            \"email\"," +
-                                                         "            \"firstName\"," +
-                                                         "            \"lastName\"," +
-                                                         "            \"cpf\"," +
-                                                         "            \"fullName\" from users where \"id\" = ? ")
+                                           .defaultValue("select \"ID\"," +
+                                                         "            \"USER_NAME\"," +
+                                                         "            \"EMAIL\"," +
+                                                         "            \"FIRST_NAME\"," +
+                                                         "            \"LAST_NAME\"" +
+//                                                         "            \"cpf\"," +
+//                                                         "            \"fullName\"" +
+                                                   " from users where \"ID\" = ? ")
                                            .add()
         
                                            .property()
@@ -182,13 +184,14 @@ public class DBUserStorageProviderFactory implements UserStorageProviderFactory<
                                            .label("Find user by username SQL query")
                                            .helpText(DEFAULT_HELP_TEXT + String.format(PARAMETER_HELP, "user username") + PARAMETER_PLACEHOLDER_HELP)
                                            .type(ProviderConfigProperty.STRING_TYPE)
-                                           .defaultValue("select \"id\"," +
-                                                         "            \"username\"," +
-                                                         "            \"email\"," +
-                                                         "            \"firstName\"," +
-                                                         "            \"lastName\"," +
-                                                         "            \"cpf\"," +
-                                                         "            \"fullName\" from users where \"username\" = ? ")
+                                           .defaultValue("select \"ID\"," +
+                                                         "            \"USER_NAME\"," +
+                                                         "            \"EMAIL\"," +
+                                                         "            \"FIRST_NAME\"," +
+                                                         "            \"LAST_NAME\"" +
+//                                                         "            \"cpf\"," +
+//                                                         "            \"fullName\"" +
+                                                   " from users where \"USER_NAME\" = ? ")
                                            .add()
         
                                            .property()
@@ -196,13 +199,14 @@ public class DBUserStorageProviderFactory implements UserStorageProviderFactory<
                                            .label("Find user by search term SQL query")
                                            .helpText(DEFAULT_HELP_TEXT + String.format(PARAMETER_HELP, "search term") + PARAMETER_PLACEHOLDER_HELP)
                                            .type(ProviderConfigProperty.STRING_TYPE)
-                                           .defaultValue("select \"id\"," +
-                                                         "            \"username\"," +
-                                                         "            \"email\"," +
-                                                         "            \"firstName\"," +
-                                                         "            \"lastName\"," +
-                                                         "            \"cpf\"," +
-                                                         "            \"fullName\" from users where upper(\"username\") like (?)  or upper(\"email\") like (?) or upper(\"fullName\") like (?)")
+                                           .defaultValue("select \"ID\"," +
+                                                         "            \"USER_NAME\"," +
+                                                         "            \"EMAIL\"," +
+                                                         "            \"FIRST_NAME\"," +
+                                                         "            \"LAST_NAME\"" +
+//                                                         "            \"cpf\"," +
+//                                                         "            \"fullName\"" +
+                                                   " from users where upper(\"USER_NAME\") like (?)  or upper(\"EMAIL\") like (?) or upper(\"fullName\") like (?)")
                                            .add()
         
                                            .property()
@@ -210,7 +214,7 @@ public class DBUserStorageProviderFactory implements UserStorageProviderFactory<
                                            .label("Find password hash (blowfish or hash digest hex) SQL query")
                                            .helpText(DEFAULT_HELP_TEXT + String.format(PARAMETER_HELP, "user username") + PARAMETER_PLACEHOLDER_HELP)
                                            .type(ProviderConfigProperty.STRING_TYPE)
-                                           .defaultValue("select hash_pwd from users where \"username\" = ? ")
+                                           .defaultValue("select PASSWORD from USER_PASSWORD_HISTORY where \"USER_ID\" = ? ")
                                            .add()
                                            .property()
                                            .name("hashFunction")

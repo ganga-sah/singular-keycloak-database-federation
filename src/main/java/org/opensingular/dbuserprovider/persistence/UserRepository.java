@@ -1,6 +1,7 @@
 package org.opensingular.dbuserprovider.persistence;
 
 import lombok.extern.jbosslog.JBossLog;
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.codec.binary.StringUtils;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -140,17 +141,19 @@ public class UserRepository {
         return doQuery(queryConfigurations.getFindBySearchTerm(), pageable, this::readMap, search);
     }
     
-    public boolean validateCredentials(String username, String password) {
-        String hash = Optional.ofNullable(doQuery(queryConfigurations.getFindPasswordHash(), null, this::readString, username)).orElse("");
+    public boolean validateCredentials(int externalId, String password) {
+        String hash = Optional.ofNullable(doQuery(queryConfigurations.getFindPasswordHash(), null, this::readString, externalId)).orElse("");
         if (queryConfigurations.isBlowfish()) {
             return !hash.isEmpty() && BCrypt.checkpw(password, hash);
         } else {
             MessageDigest digest   = DigestUtils.getDigest(queryConfigurations.getHashFunction());
             byte[]        pwdBytes = StringUtils.getBytesUtf8(password);
-            return Objects.equals(Hex.encodeHexString(digest.digest(pwdBytes)), hash);
+            // String pwdHash = Hex.encodeHexString(digest.digest(pwdBytes));
+            String pwdHash = (new Base64()).encodeToString(digest.digest(pwdBytes));
+            return Objects.equals(pwdHash, hash);
         }
     }
-    
+
     public boolean updateCredentials(String username, String password) {
         throw new NotImplementedException("Password update not supported");
     }
