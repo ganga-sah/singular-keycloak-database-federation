@@ -79,7 +79,9 @@ public class DBUserStorageProvider implements UserStorageProvider,
             ((CachedUserModel) user).invalidate();
           }
         }
-        return repository.validateCredentials(dbUser.getUsername(), cred.getChallengeResponse());
+//        return repository.validateCredentials(dbUser.getUsername(), cred.getChallengeResponse());
+        int externalId = Integer.parseInt(StorageId.externalId(dbUser.getId()));
+        return repository.validateCredentials(externalId, cred.getChallengeResponse());
     }
     
     @Override
