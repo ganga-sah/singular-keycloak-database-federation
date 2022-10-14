@@ -214,7 +214,7 @@ public class DBUserStorageProviderFactory implements UserStorageProviderFactory<
                                            .label("Find password hash (blowfish or hash digest hex) SQL query")
                                            .helpText(DEFAULT_HELP_TEXT + String.format(PARAMETER_HELP, "user username") + PARAMETER_PLACEHOLDER_HELP)
                                            .type(ProviderConfigProperty.STRING_TYPE)
-                                           .defaultValue("select PASSWORD from USER_PASSWORD_HISTORY where \"USER_ID\" = ? ")
+                                           .defaultValue("select PASSWORD from USER_PASSWORD_HISTORY where \"USER_ID\" = ? order by \"CREATED_AT\" desc")
                                            .add()
                                            .property()
                                            .name("hashFunction")
